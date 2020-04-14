@@ -23,8 +23,8 @@ class CRCNN(nn.Module):
         self.pos_embed = nn.Embedding(len(posemb),Pos_dim)
         
         self.convs = nn.ModuleList([nn.Conv2d(Ci,Knum,(K,Dim+2*Pos_dim),padding=((K-1)//2,0)) for K in Ks])
-        #self.dropout1 = nn.Dropout(args.dropout)
-        #self.dropout2 = nn.Dropout(args.dropout)
+        self.dropout1 = nn.Dropout(args.dropout)
+        self.dropout2 = nn.Dropout(args.dropout)
         self.fc = nn.Linear(len(Ks)*Knum,Cla)
         
     def forward(self,cx):
@@ -34,7 +34,7 @@ class CRCNN(nn.Module):
         #print(pos.shape)
         x = self.embed(x) #(N,W,D)
         #print(x.shape)
-        #x = self.dropout1(x)
+        x = self.dropout1(x)
         #print(x.shape)
         
     
@@ -56,7 +56,7 @@ class CRCNN(nn.Module):
         x = [F.max_pool1d(line,line.size(2)).squeeze(2) for line in x]  # (len(Ks),N,Knum)
         
         x = torch.cat(x,1) #(N, len(Ks)*Knum)
-        #x = self.dropout2(x)
+        x = self.dropout2(x)
         logit = self.fc(x) # (N,Cla)
 
         return logit

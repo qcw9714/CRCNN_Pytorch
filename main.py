@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser(description='CRCNN text classificer')
 # learning
 parser.add_argument('-lr', type=float, default=0.025, help='initial learning rate [default: 0.001]')
 parser.add_argument('-epochs', type=int, default=128, help='number of epochs for train [default: 16]')
-parser.add_argument('-batch-size', type=int, default=128, help='batch size for training [default: 256]')
+parser.add_argument('-batch-size', type=int, default=100, help='batch size for training [default: 256]')
 parser.add_argument('-log-interval',  type=int, default=200,   help='how many steps to wait before logging training status [default: 500]')
 parser.add_argument('-dev-interval', type=int, default=400, help='how many steps to wait before testing [default: 100]')
 parser.add_argument('-save-interval', type=int, default=600, help='how many steps to wait before saving [default:500]')
@@ -46,7 +46,7 @@ for attr, value in sorted(args.__dict__.items()):
 
 #args.sent_len = 90
 args.class_num = 19
-args.pos_dim = 80
+args.pos_dim = 60
 args.mPos = 2.5
 args.mNeg = 0.5
 args.gamma = 0.05

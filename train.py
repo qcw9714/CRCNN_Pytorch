@@ -31,8 +31,8 @@ class RankingLossFunc(nn.Module):
 #         if torch.min(part1) < -20:
 #             part1 = self.gamma*(self.mPos-part1)
 #         else:
-        part1 = torch.log(1+torch.exp(self.gamma*(self.mPos-part1))) + torch.log(1+torch.exp(self.gamma*(-64+part1))) # positive loss
-        #part1 = torch.log(1+torch.exp(self.gamma*(self.mPos-part1))) 
+        #part1 = torch.log(1+torch.exp(self.gamma*(self.mPos-part1))) + torch.log(1+torch.exp(self.gamma*(-64+part1))) # positive loss
+        part1 = torch.log(1+torch.exp(self.gamma*(self.mPos-part1))) 
         #print("ind: ",ind[:,0])
         predT = ind[:,0]==target
         #print("predT: ",predT)
@@ -40,8 +40,8 @@ class RankingLossFunc(nn.Module):
 #         if torch.max(val) > 20:
 #             part2 = self.gamma*(self.mNeg+val)
 #         else:
-        part2 = torch.log(1+torch.exp(self.gamma*(self.mNeg+val)))+torch.log(1+torch.exp(self.gamma*(-64-val))) # negative loss
-        #part2 = torch.log(1+torch.exp(self.gamma*(self.mNeg+val)))
+        #part2 = torch.log(1+torch.exp(self.gamma*(self.mNeg+val)))+torch.log(1+torch.exp(self.gamma*(-64-val))) # negative loss
+        part2 = torch.log(1+torch.exp(self.gamma*(self.mNeg+val)))
         part2 = torch.dot(predT.float(),part2[:,1])+torch.dot(predF.float(),part2[:,0])
         loss = torch.dot(noneOtherInd.float(),part1)+part2 # exclusive other loss
         return loss/len(target)
@@ -66,15 +66,15 @@ def computeF(result, target, args):
     #print("comptef:\n")
     #print(result.shape)
     #print(target.shape)
-    #classes = [(1,18),(2,11),(3,17),(4,15),(5,14),(6,7),(8,16),(9,12),(10,13)]
-    classes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+    classes = [(1,18),(2,11),(3,17),(4,15),(5,14),(6,7),(8,16),(9,12),(10,13)]
+    #classes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
     for x in classes:
         #print("aaaaa")
-        #predictPos = (result.data == x[0]) + (result.data == x[1])
-        predictPos = (result.data == x)
+        predictPos = (result.data == x[0]) + (result.data == x[1])
+        #predictPos = (result.data == x)
         #print(predictPos.shape)
-        #targetPos = (target.data == x[0]) + (target.data == x[1])
-        targetPos = (target.data == x)
+        targetPos = (target.data == x[0]) + (target.data == x[1])
+        #targetPos = (target.data == x)
         #print(targetPos.shape)
         truePos = torch.dot(predictPos.float(),targetPos.float())
         #print(truePos)
@@ -90,8 +90,10 @@ def computeF(result, target, args):
         else:
             recall += truePos/targetPosNum
     
-    precision /= 18
-    recall /= 18
+    #precision /= 18
+    #recall /= 18
+    precision /= 9
+    recall /= 9
     return precision*100, recall*100, 200*precision*recall/(precision+recall)
         
 
